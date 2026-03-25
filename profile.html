@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile - LETAH</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:linear-gradient(120deg,#e0f2fe,#f1f5f9,#dbeafe);
+    min-height:100vh;
+}
+
+/* Navbar */
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 40px;
+    background:linear-gradient(90deg,#1e3a8a,#2563eb);
+    color:white;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo img{
+    width:40px;
+}
+
+nav ul{
+    display:flex;
+    list-style:none;
+    gap:20px;
+}
+
+nav ul li a{
+    text-decoration:none;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+    position:relative;
+    transition:0.3s;
+}
+
+nav ul li a::before{
+    content:"";
+    position:absolute;
+    top:-2px;
+    left:-2px;
+    right:-2px;
+    bottom:-2px;
+    border-radius:10px;
+    background:linear-gradient(45deg,#38bdf8,#6366f1,#38bdf8);
+    z-index:-1;
+    opacity:0;
+    transition:0.3s;
+}
+
+nav ul li a:hover::before{
+    opacity:1;
+}
+
+nav ul li a:hover{
+    background:white;
+    color:#2563eb;
+}
+
+.active{
+    background:white;
+    color:#2563eb;
+}
+
+.logout{
+    background:#ef4444;
+}
+
+/* Profile Section */
+.dashboard{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+}
+
+/* Profile Card */
+.profile-card{
+    background:rgba(255,255,255,0.8);
+    backdrop-filter:blur(10px);
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    width:350px;
+    text-align:center;
+}
+
+/* Profile Image */
+.profile-img{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    border:4px solid #2563eb;
+    margin-bottom:15px;
+    object-fit:cover;
+}
+
+/* Inputs */
+.profile-card input{
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+/* Button */
+button{
+    width:100%;
+    padding:12px;
+    background:linear-gradient(45deg,#2563eb,#1e3a8a);
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+/* Upload */
+.upload{
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+
+<nav>
+<div class="logo">
+<img src="logo.png" alt="LETAH Logo">
+<h2>LETAH</h2>
+</div>
+
+<ul>
+<li><a href="dashboard.html">Dashboard</a></li>
+<li><a href="reminders.html">Reminders</a></li>
+<li><a href="documents.html">Documents</a></li>
+<li><a href="expenses.html">Expenses</a></li>
+<li><a href="assistant.html">AI Assistant</a></li>
+<li><a class="active" href="profile.html">Profile</a></li>
+<li><a class="logout" href="index.html">Logout</a></li>
+</ul>
+</nav>
+
+<!-- Profile -->
+
+<div class="dashboard">
+<div class="profile-card">
+<h2>User Profile 👤</h2>
+<img src="https://via.placeholder.com/120" class="profile-img" id="profileImg">
+<input type="text" id="fullName" placeholder="Full Name">
+<input type="email" id="email" placeholder="Email Address">
+<input type="tel" id="phone" placeholder="Phone Number">
+
+<div class="upload">
+<input type="file" id="photoUpload" accept="image/*">
+</div>
+
+<button id="saveProfileBtn">Save Profile</button>
+</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

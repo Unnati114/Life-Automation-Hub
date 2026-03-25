@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LETAH Dashboard</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: #f1f5f9;
+}
+
+/* Container */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, #1e3a8a, #2563eb);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.logo img {
+    width: 40px;
+}
+
+.logo h2 {
+    color: white;
+}
+
+/* Menu */
+.menu {
+    list-style: none;
+}
+
+.menu li {
+    margin: 10px 0;
+}
+
+.menu a {
+    text-decoration: none;
+    color: white;
+    padding: 12px 15px;
+    display: block;
+    border-radius: 10px;
+    transition: 0.3s;
+    font-size: 16px;
+}
+
+.menu a:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(8px);
+}
+
+.menu .active {
+    background: white;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+/* Logout */
+.logout {
+    margin-top: auto;
+    text-decoration: none;
+    background: #ef4444;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    transition: 0.3s;
+}
+
+.logout:hover {
+    background: #dc2626;
+}
+
+/* Main */
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Topbar */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Cards */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.card h3 {
+    margin-bottom: 10px;
+}
+
+.card button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    border: none;
+    background: linear-gradient(45deg, #2563eb, #1e3a8a);
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.card button:hover {
+    transform: scale(1.1);
+}
+
+/* Activity */
+.activity {
+    margin-top: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.activity ul {
+    margin-top: 10px;
+}
+
+.activity li {
+    margin: 5px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="logo.png" alt="LETAH Logo">
+            <h2>LETAH</h2>
+        </div>
+
+        <ul class="menu">
+            <li><a class="active" href="dashboard.html">🏠 Dashboard</a></li>
+            <li><a href="task.html">📋 Tasks</a></li>
+            <li><a href="reminders.html">⏰ Reminders</a></li>
+            <li><a href="documents.html">📁 Documents</a></li>
+            <li><a href="expenses.html">💰 Expenses</a></li>
+            <li><a href="assistant.html">🤖 AI Assistant</a></li>
+            <li><a href="profile.html">👤 Profile</a></li>
+        </ul>
+
+        <a class="logout" href="index.html">🚪 Logout</a>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+        <div class="topbar">
+            <h2 id="welcomeText">WELCOME TO LIFE AUTOMATION HUB, User</h2>
+            <div class="user">
+                <span id="userName">User</span>
+                <img src="https://via.placeholder.com/40" id="userImg" alt="User Avatar">
+            </div>
+        </div>
+
+        <div class="cards">
+            <div class="card" data-page="documents.html">
+                <h3>Upcoming Bills</h3>
+                <p id="billCount">0 Pending</p>
+                <button>View</button>
+            </div>
+
+            <div class="card" data-page="task.html">
+                <h3>Today's Tasks</h3>
+                <p id="taskCount">0 Remaining</p>
+                <button>Open</button>
+            </div>
+
+            <div class="card" data-page="expenses.html">
+                <h3>Monthly Expenses</h3>
+                <p id="expenseCount">₹0</p>
+                <button>Check</button>
+            </div>
+
+            <div class="card" data-page="documents.html">
+                <h3>Documents Expiry</h3>
+                <p id="docCount">0 Expiring</p>
+                <button>View</button>
+            </div>
+        </div>
+
+        <div class="activity">
+            <h3>Recent Activity</h3>
+            <ul id="activityList">
+                <!-- Activities populated dynamically -->
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<script src="dashboard.js"></script>
+</body>
+</html>

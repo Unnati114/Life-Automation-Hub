@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>LETAH Login</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:url("https://images.unsplash.com/photo-1498050108023-c5249f4df085") no-repeat center center/cover;
+}
+
+/* Light overlay */
+
+body::before{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,0.85);
+    top:0;
+    left:0;
+}
+
+/* Login box */
+
+.form-container{
+    position:relative;
+    background:white;
+    padding:40px;
+    width:350px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+/* Title */
+
+h2{
+    margin-bottom:20px;
+    color:#2563eb;
+}
+
+/* Inputs */
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:15px;
+}
+
+/* Button */
+
+button{
+    width:100%;
+    padding:12px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+button:hover{
+    background:#1e40af;
+}
+
+/* Extra links */
+
+.extra{
+    margin-top:15px;
+}
+
+.extra a{
+    text-decoration:none;
+    color:#2563eb;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="form-container">
+
+<h2>LETAH Login</h2>
+
+<form action="dashboard.html">
+
+<input type="email" placeholder="Email" required>
+
+<input type="password" placeholder="Password" required>
+
+<button type="submit">Login</button>
+
+</form>
+
+<div class="extra">
+<p>Don't have an account? <a href="signup.html">Signup</a></p>
+</div>
+
+</div>
+
+</body>
+</html>

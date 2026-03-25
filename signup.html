@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LETAH Signup</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:url("https://images.unsplash.com/photo-1519389950473-47ba0277781c") no-repeat center center/cover;
+    min-height:100vh;
+}
+
+/* overlay */
+
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,0.85);
+    top:0;
+    left:0;
+    z-index:-1;
+}
+
+/* Navbar */
+
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 60px;
+    background:white;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+}
+
+.logo img{
+    width:50px;
+}
+
+nav ul{
+    list-style:none;
+    display:flex;
+    gap:25px;
+}
+
+nav ul li a{
+    text-decoration:none;
+    color:#2563eb;
+    font-weight:bold;
+}
+
+/* Form container */
+
+.form-container{
+    width:380px;
+    background:white;
+    padding:40px;
+    border-radius:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.2);
+    margin:50px auto;
+    text-align:center;
+}
+
+h2{
+    margin-bottom:20px;
+    color:#2563eb;
+}
+
+/* Inputs */
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+/* Button */
+
+button{
+    width:100%;
+    padding:12px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1e40af;
+}
+
+p{
+    margin-top:15px;
+}
+
+a{
+    color:#2563eb;
+    text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav>
+
+<div class="logo">
+<img src="logo.png" alt="LETAH Logo">
+</div>
+
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="login.html">Login</a></li>
+</ul>
+
+</nav>
+
+<!-- Signup Form -->
+
+<div class="form-container">
+
+<h2>Create Account</h2>
+
+<form action="dashboard.html">
+
+<input type="text" placeholder="Full Name" required>
+
+<input type="email" placeholder="Email Address" required>
+
+<input type="tel" placeholder="Phone Number" required>
+
+<input type="password" placeholder="Create Password" required>
+
+<input type="password" placeholder="Confirm Password" required>
+
+<button type="submit">Signup</button>
+
+</form>
+
+<p>
+Already have an account? 
+<a href="login.html">Login</a>
+</p>
+
+</div>
+
+</body>
+</html>
