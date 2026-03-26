@@ -19,7 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-
+// =============================
+// TASK PAGE (MongoDB Connected)
+// =============================
 function setupTasks() {
 
     const taskInput = document.getElementById("taskInput");
@@ -29,130 +31,90 @@ function setupTasks() {
     const addTaskBtn = document.getElementById("addTaskBtn");
     const taskContainer = document.getElementById("taskContainer");
 
-    const API = "http://localhost:5000/api/task";
+    let editId = null;
 
-
-    // LOAD TASKS
+    // Load Tasks
     async function loadTasks() {
 
-        try {
+        const res = await fetch("http://localhost:5000/api/tasks/all");
+        const tasks = await res.json();
 
-            const res = await fetch(API);
-            const tasks = await res.json();
+        taskContainer.innerHTML = "";
 
-            taskContainer.innerHTML = "";
+        tasks.forEach(task => {
 
-            tasks.forEach(task => {
+            const div = document.createElement("div");
+            div.classList.add("card-box");
 
-                taskContainer.innerHTML += `
-                    <div class="card-box">
-                        <h3>${task.title}</h3>
-                        <p>${task.date || "No Date"}</p>
+            div.innerHTML = `
+                <h3>${task.title}</h3>
+                <p>${task.date}</p>
 
-                        <button onclick="editTask('${task._id}','${task.title}','${task.date}')">
-                            Edit
-                        </button>
+                <button onclick="editTask('${task._id}','${task.title}','${task.date}')">Edit</button>
+                <button class="delete-btn" onclick="deleteTask('${task._id}')">Delete</button>
+            `;
 
-                        <button class="delete-btn" onclick="deleteTask('${task._id}')">
-                            Delete
-                        </button>
-                    </div>
-                `;
-            });
-
-        } catch (error) {
-            console.log("Error loading tasks", error);
-        }
-    }
-
-
-    // ADD TASK
-    addTaskBtn.addEventListener("click", async () => {
-
-        if (!taskInput.value) {
-            alert("Enter Task");
-            return;
-        }
-
-        try {
-
-            await fetch(API + "/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    title: taskInput.value,
-                    date: taskDate.value
-                })
-            });
-
-            taskInput.value = "";
-            taskDate.value = "";
-
-            loadTasks();
-
-        } catch (error) {
-            console.log("Add error", error);
-        }
-    });
-
-
-    // EDIT TASK
-    window.editTask = async function (id, oldTitle, oldDate) {
-
-        const newTitle = prompt("Update Task", oldTitle);
-        if (!newTitle) return;
-
-        const newDate = prompt("Update Date", oldDate || "");
-
-        try {
-
-            const res = await fetch(API + "/update/" + id, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    title: newTitle,
-                    date: newDate
-                })
-            });
-
-            const data = await res.json();
-            alert(data.message);
-
-            loadTasks();
-
-        } catch (error) {
-            console.log("Update error", error);
-        }
-    }
-
-
-    // DELETE TASK
-    window.deleteTask = async function (id) {
-
-        if (!confirm("Are you sure to delete task?")) return;
-
-        try {
-
-            const res = await fetch(API + "/delete/" + id, {
-                method: "DELETE"
-            });
-
-            const data = await res.json();
-            alert(data.message);
-
-            loadTasks();
-
-        } catch (error) {
-            console.log("Delete error", error);
-        }
+            taskContainer.appendChild(div);
+        });
     }
 
     loadTasks();
+
+    // Add or Update
+    addTaskBtn.addEventListener("click", async () => {
+
+        const title = taskInput.value;
+        const date = taskDate.value;
+
+        if (!title) return alert("Enter task");
+
+        if (editId) {
+
+            await fetch(`http://localhost:5000/api/tasks/update/${editId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, date })
+            });
+
+            editId = null;
+            addTaskBtn.innerText = "Add Task";
+
+        } else {
+
+            await fetch("http://localhost:5000/api/tasks/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, date })
+            });
+        }
+
+        taskInput.value = "";
+        taskDate.value = "";
+
+        loadTasks();
+    });
+
+    // Delete
+    window.deleteTask = async function (id) {
+
+        await fetch(`http://localhost:5000/api/tasks/delete/${id}`, {
+            method: "DELETE"
+        });
+
+        loadTasks();
+    }
+
+    // Edit
+    window.editTask = function (id, title, date) {
+
+        taskInput.value = title;
+        taskDate.value = date;
+
+        editId = id;
+        addTaskBtn.innerText = "Update Task";
+    }
 }
+
 // =============================
 // REMINDER PAGE
 // =============================
@@ -199,6 +161,7 @@ function setupReminders() {
     });
 
     window.deleteReminder = function (index) {
+
         reminders.splice(index, 1);
         localStorage.setItem("reminders", JSON.stringify(reminders));
         showReminders();
@@ -263,6 +226,7 @@ function setupDocuments() {
     });
 
     window.deleteDoc = function (index) {
+
         documents.splice(index, 1);
         localStorage.setItem("documents", JSON.stringify(documents));
         showDocuments();
@@ -404,12 +368,7 @@ function setupSignup() {
             headers: {
                 "Content-Type": "application/json"
             },
-
-            body: JSON.stringify({
-                name,
-                email,
-                password
-            })
+            body: JSON.stringify({ name, email, password })
         });
 
         const data = await res.json();
@@ -443,11 +402,7 @@ function setupLogin() {
             headers: {
                 "Content-Type": "application/json"
             },
-
-            body: JSON.stringify({
-                email,
-                password
-            })
+            body: JSON.stringify({ email, password })
         });
 
         const data = await res.json();

@@ -4,15 +4,18 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
-mongoose.connect("mongodb://127.0.0.1:27017/LETAH")
+mongoose.connect("mongodb://127.0.0.1:27017/letahDB")
 .then(() => console.log("MongoDB Connected"))
 .catch(err => console.log(err));
 
-const taskRoutes = require("./routes/task");
-app.use("/api/task", taskRoutes);
+const authRoutes = require("./routes/auth");
+const taskRoutes = require("./routes/Task");
+
+app.use("/api/auth", authRoutes);
+app.use("/api/tasks", taskRoutes);
 
 app.listen(5000, () => {
     console.log("Server running on port 5000");
