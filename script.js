@@ -1,78 +1,169 @@
-document.addEventListener("DOMContentLoaded", function () {
+// =============================
+// GLOBAL CHECK
+// =============================
+document.addEventListener("DOMContentLoaded", () => {
+
+    console.log("LETAH Script Loaded");
+
+    loadProfileHeader();
+    loadDashboardData();
+    setupTasks();
+    setupReminders();
+    setupDocuments();
+    setupExpenses();
+    setupAssistant();
+    setupProfile();
+    setupSignup();
+    setupLogin();
+
+});
+
+
+
+function setupTasks() {
 
     const taskInput = document.getElementById("taskInput");
+    if (!taskInput) return;
+
     const taskDate = document.getElementById("taskDate");
     const addTaskBtn = document.getElementById("addTaskBtn");
     const taskContainer = document.getElementById("taskContainer");
 
-    // Only run on tasks page
-    if (!taskInput) return;
+    const API = "http://localhost:5000/api/task";
 
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-    function showTasks() {
+    // LOAD TASKS
+    async function loadTasks() {
 
-        taskContainer.innerHTML = "";
+        try {
 
-        tasks.forEach((task, index) => {
+            const res = await fetch(API);
+            const tasks = await res.json();
 
-            let card = document.createElement("div");
-            card.className = "card-box";
+            taskContainer.innerHTML = "";
 
-            card.innerHTML = `
-                <h3>${task.name}</h3>
-                <p>Due: ${task.date}</p>
-                <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
-            `;
+            tasks.forEach(task => {
 
-            taskContainer.appendChild(card);
-        });
+                taskContainer.innerHTML += `
+                    <div class="card-box">
+                        <h3>${task.title}</h3>
+                        <p>${task.date || "No Date"}</p>
+
+                        <button onclick="editTask('${task._id}','${task.title}','${task.date}')">
+                            Edit
+                        </button>
+
+                        <button class="delete-btn" onclick="deleteTask('${task._id}')">
+                            Delete
+                        </button>
+                    </div>
+                `;
+            });
+
+        } catch (error) {
+            console.log("Error loading tasks", error);
+        }
     }
 
-    addTaskBtn.addEventListener("click", function () {
 
-        if (taskInput.value.trim() === "") {
+    // ADD TASK
+    addTaskBtn.addEventListener("click", async () => {
+
+        if (!taskInput.value) {
             alert("Enter Task");
             return;
         }
 
-        let newTask = {
-            name: taskInput.value,
-            date: taskDate.value
-        };
+        try {
 
-        tasks.push(newTask);
+            await fetch(API + "/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    title: taskInput.value,
+                    date: taskDate.value
+                })
+            });
 
-        localStorage.setItem("tasks", JSON.stringify(tasks));
+            taskInput.value = "";
+            taskDate.value = "";
 
-        taskInput.value = "";
-        taskDate.value = "";
+            loadTasks();
 
-        showTasks();
+        } catch (error) {
+            console.log("Add error", error);
+        }
     });
 
-    window.deleteTask = function (index) {
 
-        tasks.splice(index, 1);
+    // EDIT TASK
+    window.editTask = async function (id, oldTitle, oldDate) {
 
-        localStorage.setItem("tasks", JSON.stringify(tasks));
+        const newTitle = prompt("Update Task", oldTitle);
+        if (!newTitle) return;
 
-        showTasks();
-    };
+        const newDate = prompt("Update Date", oldDate || "");
 
-    showTasks();
-});
+        try {
 
+            const res = await fetch(API + "/update/" + id, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    title: newTitle,
+                    date: newDate
+                })
+            });
+
+            const data = await res.json();
+            alert(data.message);
+
+            loadTasks();
+
+        } catch (error) {
+            console.log("Update error", error);
+        }
+    }
+
+
+    // DELETE TASK
+    window.deleteTask = async function (id) {
+
+        if (!confirm("Are you sure to delete task?")) return;
+
+        try {
+
+            const res = await fetch(API + "/delete/" + id, {
+                method: "DELETE"
+            });
+
+            const data = await res.json();
+            alert(data.message);
+
+            loadTasks();
+
+        } catch (error) {
+            console.log("Delete error", error);
+        }
+    }
+
+    loadTasks();
+}
+// =============================
 // REMINDER PAGE
-
-document.addEventListener("DOMContentLoaded", function () {
+// =============================
+function setupReminders() {
 
     const reminderInput = document.getElementById("reminderInput");
+    if (!reminderInput) return;
+
     const reminderDate = document.getElementById("reminderDate");
     const addReminderBtn = document.getElementById("addReminderBtn");
     const reminderContainer = document.getElementById("reminderContainer");
-
-    if (!reminderInput) return;
 
     let reminders = JSON.parse(localStorage.getItem("reminders")) || [];
 
@@ -80,34 +171,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
         reminderContainer.innerHTML = "";
 
-        reminders.forEach((reminder, index) => {
+        reminders.forEach((r, index) => {
 
-            let card = document.createElement("div");
-            card.className = "card-box";
-
-            card.innerHTML = `
-                <h3>${reminder.name}</h3>
-                <p>Due: ${reminder.date}</p>
-                <button class="delete-btn" onclick="deleteReminder(${index})">Delete</button>
+            reminderContainer.innerHTML += `
+                <div class="card-box">
+                    <h3>${r.name}</h3>
+                    <p>Due: ${r.date}</p>
+                    <button class="delete-btn" onclick="deleteReminder(${index})">Delete</button>
+                </div>
             `;
-
-            reminderContainer.appendChild(card);
         });
     }
 
-    addReminderBtn.addEventListener("click", function () {
+    addReminderBtn.addEventListener("click", () => {
 
-        if (reminderInput.value.trim() === "") {
-            alert("Enter Reminder");
-            return;
-        }
-
-        let newReminder = {
+        reminders.push({
             name: reminderInput.value,
             date: reminderDate.value
-        };
-
-        reminders.push(newReminder);
+        });
 
         localStorage.setItem("reminders", JSON.stringify(reminders));
 
@@ -118,28 +199,26 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     window.deleteReminder = function (index) {
-
         reminders.splice(index, 1);
-
         localStorage.setItem("reminders", JSON.stringify(reminders));
-
         showReminders();
-    };
+    }
 
     showReminders();
-});
+}
 
+
+// =============================
 // DOCUMENT PAGE
-
-document.addEventListener("DOMContentLoaded", function () {
+// =============================
+function setupDocuments() {
 
     const docName = document.getElementById("docName");
+    if (!docName) return;
+
     const docDate = document.getElementById("docDate");
-    const docFile = document.getElementById("docFile");
     const uploadBtn = document.getElementById("uploadBtn");
     const docContainer = document.getElementById("docContainer");
-
-    if (!docName) return;
 
     let documents = JSON.parse(localStorage.getItem("documents")) || [];
     let reminders = JSON.parse(localStorage.getItem("reminders")) || [];
@@ -150,42 +229,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
         documents.forEach((doc, index) => {
 
-            let card = document.createElement("div");
-            card.className = "card-box";
-
-            card.innerHTML = `
-                <h3>${doc.name}</h3>
-                <p>Due: ${doc.date}</p>
-                <button class="delete-btn" onclick="deleteDoc(${index})">Delete</button>
+            docContainer.innerHTML += `
+                <div class="card-box">
+                    <h3>${doc.name}</h3>
+                    <p>${doc.date}</p>
+                    <button onclick="deleteDoc(${index})" class="delete-btn">Delete</button>
+                </div>
             `;
-
-            docContainer.appendChild(card);
         });
     }
 
-    uploadBtn.addEventListener("click", function () {
+    uploadBtn.addEventListener("click", () => {
 
-        if (docName.value === "" || docDate.value === "") {
-            alert("Enter document details");
-            return;
-        }
-
-        let newDoc = {
+        documents.push({
             name: docName.value,
             date: docDate.value
-        };
-
-        documents.push(newDoc);
-
-        localStorage.setItem("documents", JSON.stringify(documents));
-
-        // AUTO REMINDER CREATE
+        });
 
         reminders.push({
             name: docName.value,
             date: docDate.value
         });
 
+        localStorage.setItem("documents", JSON.stringify(documents));
         localStorage.setItem("reminders", JSON.stringify(reminders));
 
         alert("Document uploaded and reminder created");
@@ -197,198 +263,202 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     window.deleteDoc = function (index) {
-
         documents.splice(index, 1);
-
         localStorage.setItem("documents", JSON.stringify(documents));
-
         showDocuments();
-    };
+    }
 
     showDocuments();
-});
+}
 
-document.addEventListener("DOMContentLoaded", function () {
-    // -------- EXPENSES PAGE LOGIC --------
-    const expenseName = document.getElementById('expenseName');
-    const expenseAmount = document.getElementById('expenseAmount');
-    const expenseDate = document.getElementById('expenseDate');
-    const addExpenseBtn = document.getElementById('addExpenseBtn');
-    const expenseContainer = document.getElementById('expenseContainer');
 
-    if (expenseContainer) { // check if this page exists
-        // Add new expense
-        addExpenseBtn.addEventListener('click', () => {
-            if (expenseName.value && expenseAmount.value && expenseDate.value) {
-                const cardBox = document.createElement('div');
-                cardBox.classList.add('card-box');
+// =============================
+// EXPENSE PAGE
+// =============================
+function setupExpenses() {
 
-                const h3 = document.createElement('h3');
-                h3.innerText = expenseName.value;
+    const expenseName = document.getElementById("expenseName");
+    if (!expenseName) return;
 
-                const p = document.createElement('p');
-                const date = new Date(expenseDate.value);
-                const options = { day: 'numeric', month: 'long' };
-                p.innerText = `₹${expenseAmount.value} - ${date.toLocaleDateString('en-US', options)}`;
+    const expenseAmount = document.getElementById("expenseAmount");
+    const expenseDate = document.getElementById("expenseDate");
+    const addExpenseBtn = document.getElementById("addExpenseBtn");
+    const expenseContainer = document.getElementById("expenseContainer");
 
-                const delBtn = document.createElement('button');
-                delBtn.innerText = 'Delete';
-                delBtn.classList.add('delete-btn');
-                delBtn.addEventListener('click', () => {
-                    cardBox.remove();
-                });
+    addExpenseBtn.addEventListener("click", () => {
 
-                cardBox.appendChild(h3);
-                cardBox.appendChild(p);
-                cardBox.appendChild(delBtn);
+        const card = document.createElement("div");
+        card.className = "card-box";
 
-                expenseContainer.appendChild(cardBox);
+        card.innerHTML = `
+            <h3>${expenseName.value}</h3>
+            <p>₹${expenseAmount.value} - ${expenseDate.value}</p>
+            <button class="delete-btn">Delete</button>
+        `;
 
-                // Clear input fields
-                expenseName.value = '';
-                expenseAmount.value = '';
-                expenseDate.value = '';
-            } else {
-                alert('Please fill all fields!');
-            }
-        });
+        card.querySelector("button").onclick = () => card.remove();
 
-        // Delete existing default cards
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.target.parentElement.remove();
-            });
-        });
-    }
-});
-
-// -------- AI ASSISTANT PAGE LOGIC --------
-const chatBox = document.getElementById('chatBox');
-const userInput = document.getElementById('userInput');
-const sendBtn = document.getElementById('sendBtn');
-
-if(chatBox){ // ensure we are on assistant page
-    sendBtn.addEventListener('click', () => {
-        const msg = userInput.value.trim();
-        if(msg){
-            // Display user message
-            const userMsgDiv = document.createElement('div');
-            userMsgDiv.classList.add('user-msg');
-            userMsgDiv.innerText = msg;
-            chatBox.appendChild(userMsgDiv);
-
-            // Simple assistant response (placeholder)
-            const assistantMsgDiv = document.createElement('div');
-            assistantMsgDiv.classList.add('assistant-msg');
-            assistantMsgDiv.innerText = "This is a placeholder response for: " + msg;
-            chatBox.appendChild(assistantMsgDiv);
-
-            chatBox.scrollTop = chatBox.scrollHeight;
-            userInput.value = '';
-        }
-    });
-
-    // Optional: send message on Enter key
-    userInput.addEventListener('keypress', (e) => {
-        if(e.key === "Enter") sendBtn.click();
+        expenseContainer.appendChild(card);
     });
 }
-document.addEventListener("DOMContentLoaded", function () {
-    // -------- PROFILE PAGE LOGIC --------
+
+
+// =============================
+// AI ASSISTANT
+// =============================
+function setupAssistant() {
+
+    const chatBox = document.getElementById("chatBox");
+    if (!chatBox) return;
+
+    const userInput = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    sendBtn.addEventListener("click", () => {
+
+        const msg = userInput.value;
+
+        chatBox.innerHTML += `<div class="user-msg">${msg}</div>`;
+        chatBox.innerHTML += `<div class="assistant-msg">AI Response: ${msg}</div>`;
+
+        userInput.value = "";
+    });
+}
+
+
+// =============================
+// PROFILE PAGE
+// =============================
+function setupProfile() {
+
     const fullName = document.getElementById("fullName");
+    if (!fullName) return;
+
     const email = document.getElementById("email");
     const phone = document.getElementById("phone");
-    const profileImg = document.getElementById("profileImg");
-    const photoUpload = document.getElementById("photoUpload");
-    const saveProfileBtn = document.getElementById("saveProfileBtn");
+    const saveBtn = document.getElementById("saveProfileBtn");
 
-    if (fullName) { // check if we are on profile page
+    saveBtn.addEventListener("click", () => {
 
-        // Load saved data from localStorage
-        const savedProfile = JSON.parse(localStorage.getItem("LETAH_Profile"));
-        if (savedProfile) {
-            fullName.value = savedProfile.fullName || "";
-            email.value = savedProfile.email || "";
-            phone.value = savedProfile.phone || "";
-            profileImg.src = savedProfile.photo || "https://via.placeholder.com/120";
-        }
+        localStorage.setItem("LETAH_Profile", JSON.stringify({
+            fullName: fullName.value,
+            email: email.value,
+            phone: phone.value
+        }));
 
-        // Upload photo
-        photoUpload.addEventListener("change", function () {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    profileImg.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+        alert("Profile Saved");
+    });
+}
 
-        // Save profile
-        saveProfileBtn.addEventListener("click", function () {
-            const profileData = {
-                fullName: fullName.value,
-                email: email.value,
-                phone: phone.value,
-                photo: profileImg.src
-            };
-            localStorage.setItem("LETAH_Profile", JSON.stringify(profileData));
-            alert("Profile saved successfully!");
-        });
-    }
-});
 
-document.addEventListener("DOMContentLoaded", function () {
-    // Load profile info from localStorage
+// =============================
+// DASHBOARD
+// =============================
+function loadDashboardData() {
+
+    const bill = document.getElementById("billCount");
+    if (!bill) return;
+
+    bill.innerText = "3 Pending";
+    document.getElementById("taskCount").innerText = "5 Remaining";
+    document.getElementById("expenseCount").innerText = "₹4500";
+    document.getElementById("docCount").innerText = "2 Expiring";
+}
+
+
+// =============================
+// HEADER PROFILE
+// =============================
+function loadProfileHeader() {
+
+    const userName = document.getElementById("userName");
+    if (!userName) return;
+
     const profile = JSON.parse(localStorage.getItem("LETAH_Profile"));
 
-    const userNameSpan = document.getElementById("userName");
-    const userImg = document.getElementById("userImg");
-    const welcomeText = document.getElementById("welcomeText");
-
-    if(profile){
-        userNameSpan.innerText = profile.fullName || "User";
-        userImg.src = profile.photo || "https://via.placeholder.com/40";
-        welcomeText.innerText = `WELCOME TO LIFE AUTOMATION HUB, ${profile.fullName || "User"}`;
+    if (profile) {
+        userName.innerText = profile.fullName;
     }
+}
 
-    // Example dynamic dashboard data
-    const dashboardData = {
-        upcomingBills: 3,
-        todaysTasks: 5,
-        monthlyExpenses: 4500,
-        documentsExpiring: 2,
-        recentActivity: [
-            "Electricity bill reminder added",
-            "New document uploaded",
-            "Expense updated",
-            "Task completed"
-        ]
-    };
 
-    // Update cards
-    document.getElementById("billCount").innerText = `${dashboardData.upcomingBills} Pending`;
-    document.getElementById("taskCount").innerText = `${dashboardData.todaysTasks} Remaining`;
-    document.getElementById("expenseCount").innerText = `₹${dashboardData.monthlyExpenses}`;
-    document.getElementById("docCount").innerText = `${dashboardData.documentsExpiring} Expiring`;
+// =============================
+// SIGNUP
+// =============================
+function setupSignup() {
 
-    // Populate recent activity
-    const activityList = document.getElementById("activityList");
-    activityList.innerHTML = "";
-    dashboardData.recentActivity.forEach(act=>{
-        const li = document.createElement("li");
-        li.innerText = act;
-        activityList.appendChild(li);
-    });
+    const signupForm = document.getElementById("signupForm");
+    if (!signupForm) return;
 
-    // Make cards clickable
-    document.querySelectorAll(".cards .card").forEach(card=>{
-        card.addEventListener("click", ()=>{
-            const page = card.dataset.page;
-            if(page){
-                window.location.href = page;
-            }
+    signupForm.addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const res = await fetch("http://localhost:5000/api/auth/signup", {
+
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                name,
+                email,
+                password
+            })
         });
+
+        const data = await res.json();
+
+        alert(data.message);
+
+        if (res.status === 201)
+            window.location.href = "login.html";
     });
-});
+}
+
+
+// =============================
+// LOGIN
+// =============================
+function setupLogin() {
+
+    const loginForm = document.getElementById("loginForm");
+    if (!loginForm) return;
+
+    loginForm.addEventListener("submit", async (e) => {
+
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const res = await fetch("http://localhost:5000/api/auth/login", {
+
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                email,
+                password
+            })
+        });
+
+        const data = await res.json();
+
+        alert(data.message);
+
+        if (res.status === 200) {
+
+            localStorage.setItem("user", JSON.stringify(data.user));
+
+            window.location.href = "dashboard.html";
+        }
+    });
+}

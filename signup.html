@@ -20,8 +20,6 @@ body{
     min-height:100vh;
 }
 
-/* overlay */
-
 body::before{
     content:"";
     position:fixed;
@@ -32,8 +30,6 @@ body::before{
     left:0;
     z-index:-1;
 }
-
-/* Navbar */
 
 nav{
     display:flex;
@@ -65,8 +61,6 @@ nav ul li a{
     font-weight:bold;
 }
 
-/* Form container */
-
 .form-container{
     width:380px;
     background:white;
@@ -82,8 +76,6 @@ h2{
     color:#2563eb;
 }
 
-/* Inputs */
-
 input{
     width:100%;
     padding:12px;
@@ -91,8 +83,6 @@ input{
     border-radius:8px;
     border:1px solid #ccc;
 }
-
-/* Button */
 
 button{
     width:100%;
@@ -124,7 +114,6 @@ a{
 
 <body>
 
-<!-- Navbar -->
 <nav>
 
 <div class="logo">
@@ -138,27 +127,28 @@ a{
 
 </nav>
 
-<!-- Signup Form -->
-
 <div class="form-container">
 
 <h2>Create Account</h2>
 
-<form action="dashboard.html">
+<!-- only change here -->
+<form id="signupForm">
 
-<input type="text" placeholder="Full Name" required>
+<input type="text" id="name" placeholder="Full Name" required>
 
-<input type="email" placeholder="Email Address" required>
+<input type="email" id="email" placeholder="Email Address" required>
 
-<input type="tel" placeholder="Phone Number" required>
+<input type="tel" id="phone" placeholder="Phone Number" required>
 
-<input type="password" placeholder="Create Password" required>
+<input type="password" id="password" placeholder="Create Password" required>
 
-<input type="password" placeholder="Confirm Password" required>
+<input type="password" id="confirmPassword" placeholder="Confirm Password" required>
 
 <button type="submit">Signup</button>
 
 </form>
+
+<p id="message"></p>
 
 <p>
 Already have an account? 
@@ -166,6 +156,9 @@ Already have an account?
 </p>
 
 </div>
+
+<!-- connect backend script -->
+<script src="script.js"></script>
 
 </body>
 </html>
