@@ -4,181 +4,365 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LETAH - Life Event & Task Automation Hub</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
 }
 
 body{
-    background:linear-gradient(-45deg,#0f172a,#1e293b,#020617,#1e40af);
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
     background-size:400% 400%;
-    animation:bg 10s ease infinite;
-    color:white;
+    animation:gradient 15s ease infinite;
+    color:#333;
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
 }
 
-/* Background animation */
-@keyframes bg{
+@keyframes gradient {
     0%{background-position:0% 50%;}
     50%{background-position:100% 50%;}
     100%{background-position:0% 50%;}
 }
 
-/* Navbar */
+@keyframes slideInDown {
+    from{opacity:0;transform:translateY(-30px);}
+    to{opacity:1;transform:translateY(0);}
+}
+
+@keyframes slideInUp {
+    from{opacity:0;transform:translateY(30px);}
+    to{opacity:1;transform:translateY(0);}
+}
 
 nav{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:15px 60px;
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(15px);
-    border-bottom:1px solid rgba(255,255,255,0.1);
+    padding:20px 80px;
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(20px);
+    box-shadow:0 10px 50px rgba(0,0,0,0.1);
     position:sticky;
     top:0;
+    z-index:1000;
+    animation:slideInDown 0.6s ease;
 }
 
 .logo{
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:15px;
+    font-weight:700;
 }
 
 .logo img{
-    width:45px;
+    width:50px;
+    filter:drop-shadow(0 5px 15px rgba(102,126,234,0.4));
 }
 
 .logo h2{
-    color:#38bdf8;
+    background:linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    font-size:28px;
 }
 
 nav ul{
     display:flex;
     list-style:none;
-    gap:25px;
+    gap:40px;
+    align-items:center;
 }
 
 nav ul li a{
     text-decoration:none;
-    color:white;
-    transition:0.3s;
+    color:#333;
+    font-weight:600;
+    transition:all 0.3s ease;
+    position:relative;
 }
 
 nav ul li a:hover{
-    color:#38bdf8;
+    color:#667eea;
 }
 
-/* Buttons */
+nav ul li a::after{
+    content:'';
+    position:absolute;
+    bottom:-5px;
+    left:0;
+    width:0;
+    height:3px;
+    background:linear-gradient(90deg, #667eea, #764ba2);
+    transition:width 0.3s ease;
+}
+
+nav ul li a:hover::after{
+    width:100%;
+}
 
 .login-btn{
-    padding:8px 18px;
-    border:1px solid #38bdf8;
-    border-radius:20px;
+    padding:12px 30px;
+    border:2px solid #667eea;
+    border-radius:50px;
+    background:transparent;
+    color:#667eea;
+    font-weight:700;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    text-decoration:none;
+}
+
+.login-btn:hover{
+    background:#667eea;
+    color:white;
+    transform:translateY(-3px);
+    box-shadow:0 10px 30px rgba(102,126,234,0.4);
 }
 
 .signup-btn{
-    padding:8px 18px;
-    background:linear-gradient(45deg,#38bdf8,#6366f1);
-    border-radius:20px;
+    padding:12px 30px;
+    background:linear-gradient(135deg, #667eea, #764ba2);
+    border:none;
+    border-radius:50px;
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    text-decoration:none;
+    box-shadow:0 10px 30px rgba(102,126,234,0.3);
 }
 
-/* Hero */
+.signup-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 40px rgba(102,126,234,0.5);
+}
 
 .hero{
-    height:90vh;
+    height:auto;
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
     text-align:center;
+    padding:120px 40px;
+    min-height:85vh;
 }
 
 .hero h1{
-    font-size:55px;
-    margin-bottom:20px;
-    background:linear-gradient(to right,#38bdf8,#6366f1);
+    font-size:72px;
+    margin-bottom:30px;
+    background:linear-gradient(135deg, #667eea, #764ba2, #f093fb);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
+    font-weight:800;
+    line-height:1.2;
+    animation:slideInUp 0.8s ease;
 }
 
 .hero p{
-    width:60%;
-    color:#cbd5e1;
-    margin-bottom:30px;
+    width:70%;
+    color:#555;
+    margin-bottom:50px;
+    font-size:20px;
+    line-height:1.6;
+    animation:slideInUp 1s ease;
 }
 
-/* Unique Button */
+.btn-group{
+    display:flex;
+    gap:20px;
+    justify-content:center;
+    animation:slideInUp 1.2s ease;
+}
 
 .btn{
-    padding:15px 35px;
-    border-radius:30px;
-    background:linear-gradient(45deg,#38bdf8,#6366f1);
+    padding:18px 45px;
+    border-radius:50px;
+    background:linear-gradient(135deg, #667eea, #764ba2);
     color:white;
     text-decoration:none;
     font-size:18px;
-    transition:0.4s;
-    box-shadow:0 0 20px rgba(56,189,248,0.5);
+    font-weight:700;
+    transition:all 0.4s ease;
+    box-shadow:0 15px 40px rgba(102,126,234,0.4);
+    cursor:pointer;
+    display:inline-block;
+    user-select:none;
+    border:none;
 }
 
 .btn:hover{
-    transform:scale(1.1);
-    box-shadow:0 0 40px rgba(99,102,241,0.8);
+    transform:translateY(-5px);
+    box-shadow:0 20px 50px rgba(102,126,234,0.6);
 }
 
-/* Features */
+.btn-secondary{
+    padding:18px 45px;
+    border-radius:50px;
+    background:rgba(255,255,255,0.9);
+    color:#667eea;
+    text-decoration:none;
+    font-size:18px;
+    font-weight:700;
+    transition:all 0.4s ease;
+    box-shadow:0 15px 40px rgba(0,0,0,0.1);
+    cursor:pointer;
+    display:inline-block;
+    user-select:none;
+    border:none;
+}
+
+.btn-secondary:hover{
+    transform:translateY(-5px);
+    box-shadow:0 20px 50px rgba(0,0,0,0.2);
+    background:white;
+}
 
 .features{
-    padding:60px 80px;
+    padding:100px 80px;
     text-align:center;
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(10px);
 }
 
 .features h2{
-    font-size:35px;
-    margin-bottom:40px;
+    font-size:48px;
+    margin-bottom:60px;
+    background:linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    font-weight:800;
 }
 
 .feature-container{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:30px;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:40px;
 }
 
-/* Card */
-
 .card{
-    background:rgba(255,255,255,0.05);
+    background:linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1));
     backdrop-filter:blur(10px);
-    padding:30px;
+    padding:50px 30px;
     border-radius:20px;
-    transition:0.4s;
-    border:1px solid rgba(255,255,255,0.1);
+    transition:all 0.4s ease;
+    border:1px solid rgba(255,255,255,0.2);
+    cursor:pointer;
+    position:relative;
+    overflow:hidden;
+}
+
+.card::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition:left 0.5s ease;
+}
+
+.card:hover::before{
+    left:100%;
 }
 
 .card:hover{
-    transform:translateY(-10px) scale(1.05);
-    box-shadow:0 0 30px rgba(56,189,248,0.3);
+    transform:translateY(-20px);
+    box-shadow:0 30px 60px rgba(102,126,234,0.3);
+    background:linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.15));
+}
+
+.card-icon{
+    font-size:50px;
+    background:linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:20px;
 }
 
 .card h3{
-    color:#38bdf8;
-    margin-bottom:10px;
+    color:#333;
+    margin-bottom:15px;
+    font-size:24px;
+    font-weight:700;
 }
 
 .card p{
-    color:#cbd5e1;
+    color:#666;
+    font-size:16px;
+    line-height:1.6;
 }
 
-/* Footer */
+.stats{
+    padding:80px;
+    background:linear-gradient(135deg, #667eea, #764ba2);
+    color:white;
+    text-align:center;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+    gap:40px;
+}
+
+.stat-item h3{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.stat-item p{
+    font-size:18px;
+    opacity:0.9;
+}
 
 footer{
     text-align:center;
-    padding:20px;
-    margin-top:40px;
-    background:rgba(0,0,0,0.3);
-    backdrop-filter:blur(10px);
+    padding:40px 20px;
+    background:rgba(0,0,0,0.9);
+    color:white;
+    box-shadow:0 -10px 40px rgba(0,0,0,0.2);
+}
+
+footer p{
+    margin-bottom:15px;
+}
+
+.footer-links{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    margin-bottom:20px;
+}
+
+.footer-links a{
+    color:#667eea;
+    text-decoration:none;
+    transition:all 0.3s ease;
+}
+
+.footer-links a:hover{
+    color:#764ba2;
+    transform:translateY(-3px);
+}
+
+@media(max-width:768px){
+    nav{padding:15px 30px;flex-direction:column;gap:20px;}
+    nav ul{flex-direction:column;gap:15px;width:100%;}
+    .hero h1{font-size:42px;}
+    .hero p{width:90%;font-size:16px;}
+    .features{padding:50px 20px;}
+    .btn-group{flex-direction:column;width:100%;}
+    .btn, .btn-secondary{width:100%;}
 }
 
 </style>
@@ -186,75 +370,108 @@ footer{
 
 <body>
 
-<!-- Navbar -->
-
 <nav>
+    <div class="logo">
+        <img src="logo.png" alt="LETAH Logo">
+        <h2>LETAH</h2>
+    </div>
 
-<div class="logo">
-<img src="logo.png">
-<h2>LETAH</h2>
-</div>
-
-<ul>
-<li><a href="#">Home</a></li>
-<li><a href="#">Features</a></li>
-<li><a href="login.html" class="login-btn">Login</a></li>
-<li><a href="signup.html" class="signup-btn">Signup</a></li>
-</ul>
-
+    <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#stats">Impact</a></li>
+        <li><a href="login.html" class="login-btn">Login</a></li>
+        <li><a href="signup.html" class="signup-btn">Start Free</a></li>
+    </ul>
 </nav>
 
-<!-- Hero -->
-
-<section class="hero">
-
-<h1>Life Event & Task Automation Hub</h1>
-
-<p>
-Automate reminders, documents, finances, and daily tasks in one smart platform.
-</p>
-
-<a href="signup.html" class="btn">Get Started</a>
-
+<section class="hero" id="home">
+    <h1>Your Life. Automated.</h1>
+    <p>Organize your tasks, reminders, documents, and expenses all in one intelligent platform. Powered by AI, built for you.</p>
+    
+    <div class="btn-group">
+        <a href="signup.html" class="btn">Get Started Now</a>
+        <button class="btn-secondary" onclick="scrollToFeatures()">Learn More</button>
+    </div>
 </section>
 
-<!-- Features -->
+<section class="features" id="features">
+    <h2>Powerful Features</h2>
+    
+    <div class="feature-container">
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-bell"></i></div>
+            <h3>Smart Reminders</h3>
+            <p>Never miss a bill, EMI, or subscription. Automatic alerts keep you on top of everything.</p>
+        </div>
 
-<section class="features">
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-lock"></i></div>
+            <h3>Document Vault</h3>
+            <p>Securely store and organize important documents with expiry alerts and quick access.</p>
+        </div>
 
-<h2>Key Features</h2>
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-chart-pie"></i></div>
+            <h3>Expense Tracking</h3>
+            <p>Track every rupee. Get insights into your spending patterns and save more efficiently.</p>
+        </div>
 
-<div class="feature-container">
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-robot"></i></div>
+            <h3>AI Assistant</h3>
+            <p>Ask questions naturally. Get instant answers about your tasks, bills, and documents.</p>
+        </div>
 
-<div class="card">
-<h3>Smart Reminders</h3>
-<p>Automatically detect bills, EMI, and subscriptions.</p>
-</div>
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-tasks"></i></div>
+            <h3>Task Management</h3>
+            <p>Create, organize, and track tasks with deadlines. Stay productive every single day.</p>
+        </div>
 
-<div class="card">
-<h3>Document Vault</h3>
-<p>Securely store Aadhaar, PAN, License with expiry alerts.</p>
-</div>
-
-<div class="card">
-<h3>Expense Tracker</h3>
-<p>Track daily spending and analyze monthly expenses.</p>
-</div>
-
-<div class="card">
-<h3>AI Assistant</h3>
-<p>Ask questions like "Show my bills" or "Tomorrow tasks".</p>
-</div>
-
-</div>
-
+        <div class="card">
+            <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+            <h3>Complete Privacy</h3>
+            <p>Your data is yours. Encrypted storage and zero third-party access guaranteed.</p>
+        </div>
+    </div>
 </section>
 
-<!-- Footer -->
+<section class="stats" id="stats">
+    <div class="stat-item">
+        <h3>10K+</h3>
+        <p>Active Users</p>
+    </div>
+    <div class="stat-item">
+        <h3>50M+</h3>
+        <p>Tasks Managed</p>
+    </div>
+    <div class="stat-item">
+        <h3>99.9%</h3>
+        <p>Uptime</p>
+    </div>
+    <div class="stat-item">
+        <h3>Zero</h3>
+        <p>Data Breaches</p>
+    </div>
+</section>
 
 <footer>
-<p>© 2026 LETAH Project | Personal Life Automation System</p>
+    <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Contact Us</a>
+        <a href="#">Blog</a>
+    </div>
+    <p>&copy; 2026 LETAH - Life Event & Task Automation Hub. All rights reserved.</p>
+    <p>Crafted with <i class="fas fa-heart" style="color:#f093fb;"></i> for a smarter life</p>
 </footer>
+
+<script>
+function scrollToFeatures(){
+    document.getElementById('features').scrollIntoView({behavior:'smooth'});
+}
+</script>
 
 </body>
 </html>

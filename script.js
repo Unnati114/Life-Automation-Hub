@@ -362,22 +362,50 @@ function setupSignup() {
         const name = document.getElementById("name").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
 
-        const res = await fetch("http://localhost:5000/api/auth/signup", {
+        // Validate passwords
+        if (password !== confirmPassword) {
+            showMessage("Passwords do not match!", "error");
+            return;
+        }
 
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ name, email, password })
-        });
+        if (password.length < 6) {
+            showMessage("Password must be at least 6 characters!", "error");
+            return;
+        }
 
-        const data = await res.json();
+        try {
 
-        alert(data.message);
+            const res = await fetch("http://localhost:5000/api/auth/signup", {
 
-        if (res.status === 201)
-            window.location.href = "login.html";
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name, email, password })
+            });
+
+            const data = await res.json();
+
+            if (res.status === 201) {
+                showMessage("Signup Successful! Redirecting to login...", "success");
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 1500);
+            } else {
+                showMessage(data.message || "Signup failed", "error");
+            }
+
+        } catch (error) {
+            console.error("Signup error:", error);
+            showMessage("Network error! Please check if backend is running on http://localhost:5000", "error");
+        }
+
+        document.getElementById("name").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("password").value = "";
+        document.getElementById("confirmPassword").value = "";
     });
 }
 
@@ -397,24 +425,55 @@ function setupLogin() {
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
-        const res = await fetch("http://localhost:5000/api/auth/login", {
-
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email, password })
-        });
-
-        const data = await res.json();
-
-        alert(data.message);
-
-        if (res.status === 200) {
-
-            localStorage.setItem("user", JSON.stringify(data.user));
-
-            window.location.href = "dashboard.html";
+        if (!email || !password) {
+            showMessage("Please fill in all fields", "error");
+            return;
         }
+
+        try {
+
+            const res = await fetch("http://localhost:5000/api/auth/login", {
+
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+
+            if (res.status === 200) {
+
+                localStorage.setItem("user", JSON.stringify(data.user));
+                showMessage("Login Successful! Redirecting...", "success");
+                setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 1500);
+
+            } else {
+                showMessage(data.message || "Login failed", "error");
+            }
+
+        } catch (error) {
+            console.error("Login error:", error);
+            showMessage("Network error! Please check if backend is running on http://localhost:5000", "error");
+        }
+
+        document.getElementById("email").value = "";
+        document.getElementById("password").value = "";
     });
+}
+
+// Show message helper
+function showMessage(msg, type) {
+    const messageEl = document.getElementById("message");
+    if (!messageEl) return;
+    
+    messageEl.innerText = msg;
+    messageEl.style.color = type === "error" ? "#d32f2f" : "#388e3c";
+    messageEl.style.padding = "10px";
+    messageEl.style.borderRadius = "5px";
+    messageEl.style.backgroundColor = type === "error" ? "#ffebee" : "#e8f5e9";
+    messageEl.style.border = type === "error" ? "1px solid #d32f2f" : "1px solid #388e3c";
 }
